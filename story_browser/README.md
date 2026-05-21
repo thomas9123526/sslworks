@@ -15,6 +15,7 @@ is **A across all four choices**.
 - [choice-2-flutter-cert/](choice-2-flutter-cert/) — shared bundled cert vs per-device enrollment vs hybrid
 - [choice-3-admin-cert/](choice-3-admin-cert/) — per-admin / shared / no mTLS on admin
 - [choice-4-pkcs12-pbe/](choice-4-pkcs12-pbe/) — legacy SHA1-3DES / modern AES-256 / hybrid emit-both
+- [discussions/](discussions/) — session timeline grouped by phase
 
 ## Files
 

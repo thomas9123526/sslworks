@@ -1,0 +1,22 @@
+I want extract font files from the application assets and store it on sdcard or external storage.
+This is only for android side.
+But I want pack all font files into one single file and rename it as font.dat.
+So the application read from /storage/emulated/0/룡마/가상외국어회화/font.dat and extract the font files on the runtime when necessary.
+To do this task I want you make seperate project for pack files.
+Let me describe the project. Let's call the project as PackTool.
+
+PackTool should have gui to accept multiple various files or directory. 
+PackTool Gui has "Convert" button to pack the input files into single file. Gui should have editbox for naming output file name and extension.
+
+Gui should have "UnPack" button to input single packed file and extract to specified out directory and to specify out directory , there should be textfields that accept out directory.
+
+Project can Microsoft Visual Studio 2022 project with c++.
+To input directory path , put helper tool to locate the directory.
+Also make standalone console executable file that have the same function as the PackTool Gui. the console exe will input files as argument and pack into single file. also console exe can accept packed files and extract all the content.
+
+I want put some encryption for pack and unpack the files.
+So there should be root ca for this vLearn2 project.
+And issue intermediate ca for PackTool.
+And We can use intermediate ca to pack data using PackTool and then our vLearn2 application will unpack the packed files with the necessary files.
+
+So guide me for this solution one by one.

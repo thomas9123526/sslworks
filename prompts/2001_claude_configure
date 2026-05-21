@@ -1,0 +1,4 @@
+I configured claude to put conversation as md inside question folder before.
+I want append one more thing to this.
+The md filename is not organized. 
+I want prepend datetime as yyyy-MM-dd_hh:mm:ss to the existing name.

@@ -40,3 +40,15 @@ body for context. One commit per task.
 - The task is still in progress (mid-task — wait until done).
 - No files changed (pure Q&A, planning discussion, exploration).
 - The user explicitly says not to commit.
+
+## Datatool project — use `story_datatool/` instead
+
+If the work is on the **vLearn2 datatool project** (a separate effort
+started 2026-05-21 — the data-management tool the user is building for
+the vLearn2 stack), save the conversation log to `story_datatool/`
+instead of `story_claude/`. Same filename format
+(`yymmdd_hhmmss_<shorttitle>.md`, ≤ 50-char title), same content shape,
+same "skip when" rules. Only the destination folder changes.
+
+Non-datatool work (general HTTPS / mTLS work, repo plumbing, anything
+not about the datatool itself) continues to use `story_claude/`.

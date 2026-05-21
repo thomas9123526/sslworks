@@ -128,21 +128,37 @@ their system.
 
 ## Password handling (independent of PBE choice)
 
-The script defaults to `-passout pass:$NAME` — the password is the
-cert name. That's deliberate for iteration. Before handing a `.p12` to
-a real human:
+`gen-pki.sh client <name>` now generates a random 18-byte (base64)
+password per cert and writes it to two places:
 
-```bash
-PW=$(openssl rand -base64 18)
-openssl pkcs12 -export ... -passout "pass:$PW"
-echo "Password for $NAME.p12: $PW"
-```
+- stdout (visible immediately after issuing)
+- `pki/client/<name>.password` (mode 600, in case stdout scrolls)
 
-Transmit by an out-of-band channel (Signal, password manager share)
-separate from the `.p12` file itself. Storing the password in
-1Password / Vaultwarden scoped to the issuing admin is the practical
-pattern.
+Workflow for handing a cert to an admin:
+
+1. `./gen-pki.sh client admin-john`
+2. Send `admin-john.p12` over one channel (email, shared drive — the
+   bundle is encrypted, so the channel doesn't need to be).
+3. Send the password from `admin-john.password` over a **different**
+   channel (Signal, password manager share, in person).
+4. Delete `admin-john.password` from the host once the admin confirms
+   import.
+
+Storing the password in 1Password / Vaultwarden scoped to the issuing
+admin is the practical long-term pattern.
 
 The strength of the PBE matters most when the `.p12` and the password
 travel on the same channel or end up archived together. If you keep
 them strictly separated, A vs. B is a much smaller difference.
+
+### Override the random default
+
+If you need a fixed password (e.g. scripted deployment, automated
+re-import), edit the `client)` subcommand and replace the
+`PW=$(openssl rand …)` line with a literal:
+
+```bash
+PW="${CLIENT_PASSWORD:-$(openssl rand -base64 18)}"
+```
+
+Then: `CLIENT_PASSWORD='hunter2' ./gen-pki.sh client admin-john`.

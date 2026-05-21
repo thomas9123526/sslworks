@@ -10,10 +10,13 @@
 #       SAN: DNS:<hostname> + every IP. EKU: serverAuth. 825-day.
 #
 #   ./gen-pki.sh client <name>
-#       Issue pki/client/<name>.{crt,key,p12} signed by the CA.
-#       EKU: clientAuth. .p12 bundle uses PBE-SHA1-3DES + SHA1 MAC
+#       Issue pki/client/<name>.{crt,key,p12,password} signed by the
+#       CA. EKU: clientAuth. .p12 bundle uses PBE-SHA1-3DES + SHA1 MAC
 #       (legacy but universally importable: Windows store, Firefox,
-#       Android KeyChain, OpenSSL 1.0). Password = <name>.
+#       Android KeyChain, OpenSSL 1.0). Password is a random 18-byte
+#       (base64) string, written to <name>.password (mode 600) and
+#       echoed to stdout. Send the .p12 and the password on separate
+#       channels.
 #
 # All output: RSA-2048, SHA-256, X.509v3 with SAN — safe on
 # OpenSSL 1.0.x.
@@ -161,25 +164,33 @@ EOF
     CSR="${CLIENT_DIR}/${NAME}.csr"
     CRT="${CLIENT_DIR}/${NAME}.crt"
     P12="${CLIENT_DIR}/${NAME}.p12"
+    PWFILE="${CLIENT_DIR}/${NAME}.password"
     openssl req -new -nodes -newkey rsa:2048 -sha256 \
       -keyout "$KEY" -out "$CSR" -config "$CNF"
     openssl x509 -req -in "$CSR" -sha256 -days "$DAYS_LEAF" \
       -CA "$CA_CRT" -CAkey "$CA_KEY" -CAcreateserial -CAserial "$CA_SRL" \
       -out "$CRT" -extfile "$CNF" -extensions v3_req
     rm -f "$CSR"
+    # Random 18-byte (base64) password per cert. Saved to a sibling
+    # .password file (mode 600) so it isn't lost if stdout scrolls.
+    PW=$(openssl rand -base64 18)
     # Legacy PBE/MAC so the bundle imports cleanly into Windows store,
     # Firefox, Android KeyChain, and OpenSSL 1.0.x. Modern AES PBE
     # (OpenSSL 3.x default) breaks importers on older platforms.
     openssl pkcs12 -export -out "$P12" \
       -inkey "$KEY" -in "$CRT" -certfile "$CA_CRT" \
-      -name "${NAME}" -passout "pass:${NAME}" \
+      -name "${NAME}" -passout "pass:${PW}" \
       -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -macalg sha1
-    chmod 600 "$KEY" "$P12"; chmod 644 "$CRT"
+    printf '%s\n' "$PW" > "$PWFILE"
+    chmod 600 "$KEY" "$P12" "$PWFILE"; chmod 644 "$CRT"
     echo
     echo "Client cert (${DAYS_LEAF} days, signed by CA):"
     echo "  $CRT"
     echo "  $KEY"
-    echo "  $P12   (password: ${NAME})"
+    echo "  $P12       password: ${PW}"
+    echo "  $PWFILE    (mode 600, holds the same password)"
+    echo
+    echo "Send the .p12 and the password on separate channels."
     ;;
 
   ""|-h|--help|help)

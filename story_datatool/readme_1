@@ -1,0 +1,22 @@
+I want make a standalone app which can be opened via visualstudio 2022 c++.
+Let's call this app "DataManage"
+The admin will use this app to pack the data that is used for android.
+So the android app need models , fonts.
+I want the "DataManage" accepts list of absolute path which contains the files. Also accept list of names for list item.
+Let's say "DataManage" accepts ['model path', 'font path'] , ['out_model','out_font'];
+So the "DataManage" pack all files in the list item and save into single data file as specified.
+So all files in 'model path' is packed to single file called 'out_model' .
+all files in in 'font_path'  is packed to single file called 'out_font' .
+
+I want pack options inside config.json.  "DataManage" pack the files based on the pack_mode in config.json.
+
+pack_mode can be compress mode like {'compress','zip'},{'compress','rar'} .
+Also packmode can be encrypt mode like {'encrypt','rsa'},{'encrypt','fastecd'}
+I think the encrypt mode takes long when extract in the application side, so you can apply encrypt only 4kb header of 1mb. This is my think and i think it is not a good idea. you can adjust how many size for header part can be encrypt for each block.
+for encrypt I don't want complex or high algorithm, I want public and well known method for encrypt. like using openssl.
+I want create a root CA for admin and issue sub CA for admins.
+And the application verify the data source and content.
+
+There should be DataUnPackFactory inside application side to accept the pack data list and unpack to a specified folder. I want put outfolder information in the single packed data along with the names and folder structure.
+
+For this purpose please guide me one by one to reach the goal.

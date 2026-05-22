@@ -1,0 +1,9 @@
+Create me flutter android project which launch custom camera activity.
+It is for scan barcode project.
+In the center of screen, show highlight area for qrbarcode.
+The user open this app and point back camera to the physical qrcode paper or product qrcode on the square area of the camera screen.
+The square area should be light and the rest can be some disabled color to hightlight the center and should show some animation that the qrcode is running and something is recognized.
+
+After scan the qrcode, it send the qr scan result via Intent, so other project can use this cameraactivity and get qrscan result.
+You can put zxing for qrcode lib but you have to do you own QRScanActivity.  
+Project should be java based.  at least api version above 24
